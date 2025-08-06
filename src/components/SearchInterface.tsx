@@ -148,6 +148,13 @@ export default function SearchInterface({ indexName }: SearchInterfaceProps) {
           <div className="grid grid-cols-1 gap-6">
             <Hits 
               hitComponent={Hit}
+              transformItems={(items) =>
+                items.map((item: any, idx: number) => ({
+                  ...item,
+                  // Ensure a unique, stable key for each hit
+                  objectID: item.objectID ?? item.id ?? item.uid ?? item._id ?? `${item.__position ?? idx}-${item.primaryKey ?? ''}-${item.id ?? ''}-${item.uid ?? ''}`,
+                }))
+              }
               classNames={{
                 root: 'space-y-4',
                 list: 'space-y-4',
