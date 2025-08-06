@@ -436,7 +436,7 @@ export default function IndexSettings({ indexUid }: IndexSettingsProps) {
 
   return (
     <div className="w-full">
-      <h2 className="text-2xl font-bold mb-6">Settings for {indexUid}</h2>
+      <h2 className="text-2xl font-bold mb-6 text-gray-800">Settings for {indexUid}</h2>
       
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -453,7 +453,7 @@ export default function IndexSettings({ indexUid }: IndexSettingsProps) {
       {loading ? (
         <div className="text-center py-8">
           <div className="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
-          <p className="mt-2">Loading settings...</p>
+          <p className="mt-2 text-gray-700">Loading settings...</p>
         </div>
       ) : (
         <div>
@@ -461,20 +461,20 @@ export default function IndexSettings({ indexUid }: IndexSettingsProps) {
             <nav className="flex flex-wrap -mb-px">
               <button
                 onClick={() => setActiveTab('displayed')}
-                className={`mr-4 py-2 px-1 border-b-2 font-medium text-sm ${
+                className={`mr-4 py-2 px-4 border-b-2 font-medium text-sm transition-all duration-300 ${
                   activeTab === 'displayed'
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    ? 'border-blue-500 text-blue-700 bg-blue-50 shadow-sm'
+                    : 'border-transparent text-gray-600 hover:text-blue-700 hover:border-blue-300 hover:bg-blue-50/50 hover:shadow-sm'
                 }`}
               >
                 Displayed Attributes
               </button>
               <button
                 onClick={() => setActiveTab('searchable')}
-                className={`mr-4 py-2 px-1 border-b-2 font-medium text-sm ${
+                className={`mr-4 py-2 px-4 border-b-2 font-medium text-sm transition-all duration-300 ${
                   activeTab === 'searchable'
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    ? 'border-blue-500 text-blue-700 bg-blue-50 shadow-sm'
+                    : 'border-transparent text-gray-600 hover:text-blue-700 hover:border-blue-300 hover:bg-blue-50/50 hover:shadow-sm'
                 }`}
               >
                 Searchable Attributes
@@ -483,8 +483,8 @@ export default function IndexSettings({ indexUid }: IndexSettingsProps) {
                 onClick={() => setActiveTab('filterable')}
                 className={`mr-4 py-2 px-1 border-b-2 font-medium text-sm ${
                   activeTab === 'filterable'
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    ? 'border-blue-500 text-blue-700 bg-blue-50'
+                    : 'border-transparent text-gray-600 hover:text-gray-800 hover:border-gray-300 hover:bg-gray-50'
                 }`}
               >
                 Filterable Attributes
@@ -493,8 +493,8 @@ export default function IndexSettings({ indexUid }: IndexSettingsProps) {
                 onClick={() => setActiveTab('sortable')}
                 className={`mr-4 py-2 px-1 border-b-2 font-medium text-sm ${
                   activeTab === 'sortable'
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    ? 'border-blue-500 text-blue-700 bg-blue-50'
+                    : 'border-transparent text-gray-600 hover:text-gray-800 hover:border-gray-300 hover:bg-gray-50'
                 }`}
               >
                 Sortable Attributes
@@ -503,8 +503,8 @@ export default function IndexSettings({ indexUid }: IndexSettingsProps) {
                 onClick={() => setActiveTab('ranking')}
                 className={`mr-4 py-2 px-1 border-b-2 font-medium text-sm ${
                   activeTab === 'ranking'
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    ? 'border-blue-500 text-blue-700 bg-blue-50'
+                    : 'border-transparent text-gray-600 hover:text-gray-800 hover:border-gray-300 hover:bg-gray-50'
                 }`}
               >
                 Ranking Rules
@@ -513,8 +513,8 @@ export default function IndexSettings({ indexUid }: IndexSettingsProps) {
                 onClick={() => setActiveTab('stopWords')}
                 className={`mr-4 py-2 px-1 border-b-2 font-medium text-sm ${
                   activeTab === 'stopWords'
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    ? 'border-blue-500 text-blue-700 bg-blue-50'
+                    : 'border-transparent text-gray-600 hover:text-gray-800 hover:border-gray-300 hover:bg-gray-50'
                 }`}
               >
                 Stop Words
@@ -523,8 +523,8 @@ export default function IndexSettings({ indexUid }: IndexSettingsProps) {
                 onClick={() => setActiveTab('synonyms')}
                 className={`mr-4 py-2 px-1 border-b-2 font-medium text-sm ${
                   activeTab === 'synonyms'
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    ? 'border-blue-500 text-blue-700 bg-blue-50'
+                    : 'border-transparent text-gray-600 hover:text-gray-800 hover:border-gray-300 hover:bg-gray-50'
                 }`}
               >
                 Synonyms
@@ -533,8 +533,8 @@ export default function IndexSettings({ indexUid }: IndexSettingsProps) {
                 onClick={() => setActiveTab('distinct')}
                 className={`mr-4 py-2 px-1 border-b-2 font-medium text-sm ${
                   activeTab === 'distinct'
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    ? 'border-blue-500 text-blue-700 bg-blue-50'
+                    : 'border-transparent text-gray-600 hover:text-gray-800 hover:border-gray-300 hover:bg-gray-50'
                 }`}
               >
                 Distinct Attribute
@@ -543,8 +543,8 @@ export default function IndexSettings({ indexUid }: IndexSettingsProps) {
                 onClick={() => setActiveTab('typo')}
                 className={`mr-4 py-2 px-1 border-b-2 font-medium text-sm ${
                   activeTab === 'typo'
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    ? 'border-blue-500 text-blue-700 bg-blue-50'
+                    : 'border-transparent text-gray-600 hover:text-gray-800 hover:border-gray-300 hover:bg-gray-50'
                 }`}
               >
                 Typo Tolerance
@@ -567,7 +567,7 @@ export default function IndexSettings({ indexUid }: IndexSettingsProps) {
           <div className="mt-8 flex justify-end">
             <button
               onClick={fetchSettings}
-              className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300"
+              className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
             >
               Refresh Settings
             </button>

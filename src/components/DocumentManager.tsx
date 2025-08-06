@@ -92,7 +92,7 @@ export default function DocumentManager({ indexUid }: DocumentManagerProps) {
 
   return (
     <div className="w-full">
-      <h2 className="text-2xl font-bold mb-6">Documents in {indexUid}</h2>
+      <h2 className="text-2xl font-bold mb-6 text-gray-800">Documents in {indexUid}</h2>
       
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -101,7 +101,7 @@ export default function DocumentManager({ indexUid }: DocumentManagerProps) {
       )}
       
       <div className="mb-8">
-        <h3 className="text-xl font-semibold mb-4">Add New Document</h3>
+        <h3 className="text-xl font-semibold mb-4 text-gray-800">Add New Document</h3>
         <form onSubmit={handleAddDocument}>
           <div className="mb-4">
             <textarea
@@ -118,14 +118,14 @@ export default function DocumentManager({ indexUid }: DocumentManagerProps) {
           <button
             type="submit"
             disabled={isAdding}
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:bg-blue-300"
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-blue-300 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 focus:outline-none"
           >
             {isAdding ? 'Adding...' : 'Add Document'}
           </button>
         </form>
       </div>
       
-      <h3 className="text-xl font-semibold mb-4">Documents</h3>
+      <h3 className="text-xl font-semibold mb-4 text-gray-800">Documents</h3>
       
       {loading ? (
         <div className="text-center py-8">
@@ -151,7 +151,7 @@ export default function DocumentManager({ indexUid }: DocumentManagerProps) {
                     </div>
                     <button
                       onClick={() => handleDeleteDocument(id)}
-                      className="ml-4 px-2 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 flex-shrink-0"
+                      className="ml-4 px-2 py-1 bg-red-100 text-red-700 border border-red-200 rounded-md hover:bg-red-200 flex-shrink-0 focus:ring-2 focus:ring-red-500 focus:outline-none"
                     >
                       Delete
                     </button>
@@ -168,7 +168,7 @@ export default function DocumentManager({ indexUid }: DocumentManagerProps) {
                 <button
                   onClick={() => setPage(p => Math.max(1, p - 1))}
                   disabled={page === 1}
-                  className="px-3 py-1 rounded-md border disabled:opacity-50"
+                  className="px-3 py-1 rounded-md border border-gray-300 bg-white text-gray-700 transition-all duration-300 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-400 hover:shadow-sm hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:bg-gray-100 disabled:text-gray-400 disabled:transform-none disabled:shadow-none"
                 >
                   Previous
                 </button>
@@ -180,7 +180,7 @@ export default function DocumentManager({ indexUid }: DocumentManagerProps) {
                 <button
                   onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                   disabled={page === totalPages}
-                  className="px-3 py-1 rounded-md border disabled:opacity-50"
+                  className="px-3 py-1 rounded-md border border-gray-300 bg-white text-gray-700 transition-all duration-300 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-400 hover:shadow-sm hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:bg-gray-100 disabled:text-gray-400 disabled:transform-none disabled:shadow-none"
                 >
                   Next
                 </button>
@@ -193,7 +193,7 @@ export default function DocumentManager({ indexUid }: DocumentManagerProps) {
       <div className="mt-4 flex justify-end">
         <button
           onClick={fetchDocuments}
-          className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300"
+          className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
         >
           Refresh
         </button>

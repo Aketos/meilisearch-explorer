@@ -1,8 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Meilisearch Explorer
+
+A comprehensive Next.js application for managing and exploring your Meilisearch data. This application provides a user-friendly interface to interact with Meilisearch indexes, documents, and settings.
+
+![Meilisearch Explorer](https://raw.githubusercontent.com/meilisearch/meilisearch/main/assets/meilisearch-logo.svg)
+
+## Features
+
+- **Index Management**: Create, view, and delete Meilisearch indexes
+- **Document Management**: Add, edit, and delete documents within indexes
+- **Search Interface**: Perform searches across your Meilisearch indexes with a clean UI
+- **Index Settings**: Configure index settings such as searchable attributes, filterable attributes, etc.
+- **Server Management**: View server statistics, health, and version information
+
+## Prerequisites
+
+- Node.js 18.x or later
+- A running Meilisearch instance (local or remote)
+
+## Environment Variables
+
+Create a `.env.local` file in the root directory with the following variables:
+
+```
+NEXT_PUBLIC_MEILISEARCH_HOST=http://localhost:7700
+NEXT_PUBLIC_MEILISEARCH_API_KEY=your_api_key_if_needed
+```
+
+> Note: If your Meilisearch instance doesn't require an API key, you can leave `NEXT_PUBLIC_MEILISEARCH_API_KEY` empty.
 
 ## Getting Started
 
-First, run the development server:
+1. Clone the repository
+
+```bash
+git clone https://github.com/yourusername/meilisearch-explorer.git
+cd meilisearch-explorer
+```
+
+2. Install dependencies
+
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+```
+
+3. Run the development server
 
 ```bash
 npm run dev
@@ -10,27 +55,43 @@ npm run dev
 yarn dev
 # or
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Open [http://localhost:3000](http://localhost:3000) with your browser to see the application
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Application Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `/src/app`: Next.js app router pages
+- `/src/components`: React components used throughout the application
+- `/src/lib`: Utility functions and configuration
 
-## Learn More
+## Pages
 
-To learn more about Next.js, take a look at the following resources:
+- `/`: Home page with dashboard overview
+- `/indexes`: List of all Meilisearch indexes
+- `/indexes/[indexUid]`: Index detail page with document management and settings
+- `/search`: Search interface for querying indexes
+- `/management`: Server management and statistics
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Accessibility
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+This application is designed with accessibility in mind, featuring:
 
-## Deploy on Vercel
+- High contrast color schemes
+- Keyboard navigation support
+- Screen reader friendly components
+- Responsive design for all device sizes
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Contributing
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgements
+
+- [Meilisearch](https://www.meilisearch.com/) for the powerful search engine
+- [Next.js](https://nextjs.org/) for the React framework
+- [Tailwind CSS](https://tailwindcss.com/) for styling

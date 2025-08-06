@@ -42,4 +42,4 @@ export const waitForTask = async (taskUid: number) => {
 };
 
 // Create an instant-meilisearch client for InstantSearch integration
-export const searchClient = instantMeiliSearch(HOST, API_KEY).searchClient;
+export const searchClient = instantMeiliSearch(HOST, API_KEY);

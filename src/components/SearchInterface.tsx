@@ -39,7 +39,7 @@ export default function SearchInterface({ indexName }: SearchInterfaceProps) {
 
   return (
     <div className="w-full">
-      <InstantSearch searchClient={searchClient} indexName={indexName}>
+      <InstantSearch searchClient={searchClient.searchClient as any} indexName={indexName}>
         <div className="mb-4">
           <SearchBox
             placeholder="Search..."
@@ -56,7 +56,7 @@ export default function SearchInterface({ indexName }: SearchInterfaceProps) {
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-1">Results per page</label>
           <select 
-            className="p-2 border border-gray-300 rounded-md"
+            className="p-2 border border-gray-300 rounded-md bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={hitsPerPage}
             onChange={(e) => setHitsPerPage(Number(e.target.value))}
           >
@@ -77,8 +77,8 @@ export default function SearchInterface({ indexName }: SearchInterfaceProps) {
           <Pagination 
             classNames={{
               root: 'flex space-x-1',
-              item: 'px-3 py-2 border rounded-md hover:bg-gray-100',
-              selectedItem: 'px-3 py-2 border rounded-md bg-blue-500 text-white',
+              item: 'px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-700 transition-all duration-300 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-400 hover:shadow-sm hover:-translate-y-0.5',
+              selectedItem: 'px-3 py-2 border border-blue-500 rounded-md bg-blue-600 text-white shadow-sm transform scale-105',
             }}
           />
         </div>
