@@ -198,7 +198,7 @@ export default function ManagementPage() {
                     Number of Indexes
                   </dt>
                   <dd className="text-lg font-semibold text-gray-800">
-                    {serverInfo.stats?.indexes || 'N/A'}
+                    {serverInfo.stats?.indexes ? Object.keys(serverInfo.stats.indexes).length : 'N/A'}
                   </dd>
                 </div>
               </dl>

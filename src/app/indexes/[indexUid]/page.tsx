@@ -1,12 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, use } from 'react';
 import DocumentManager from '@/components/DocumentManager';
 import IndexSettings from '@/components/IndexSettings';
 
-export default function IndexDetailPage({ params }: { params: { indexUid: string } }) {
+export default function IndexDetailPage({ params }: { params: Promise<{ indexUid: string }> }) {
   const [activeTab, setActiveTab] = useState<'documents' | 'settings'>('documents');
-  const { indexUid } = params;
+  const { indexUid } = use(params as Promise<{ indexUid: string }>);
   
   return (
     <div className="py-8 animate-fade-in">

@@ -24,7 +24,7 @@ const Hit = ({ hit }: HitProps) => {
             <div key={key} className="mb-1">
               <span className="font-semibold">{key}: </span>
               <span className="text-gray-700">
-                {typeof value === 'object' ? JSON.stringify(value) : String(value)}
+                {typeof value === 'object' ? (value === null ? 'null' : JSON.stringify(value)) : String(value)}
               </span>
             </div>
           );
@@ -60,10 +60,10 @@ export default function SearchInterface({ indexName }: SearchInterfaceProps) {
             value={hitsPerPage}
             onChange={(e) => setHitsPerPage(Number(e.target.value))}
           >
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="20">20</option>
-            <option value="50">50</option>
+            <option key="5" value="5">5</option>
+            <option key="10" value="10">10</option>
+            <option key="20" value="20">20</option>
+            <option key="50" value="50">50</option>
           </select>
         </div>
         

@@ -16,7 +16,8 @@ export const JsonDisplay: React.FC<JsonDisplayProps> = ({
   const [expanded, setExpanded] = useState(initialExpanded);
   
   // Format the JSON with proper indentation
-  const formattedJson = JSON.stringify(data, null, 2);
+  // Ensure data is properly stringified before rendering
+  const formattedJson = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
   
   // Function to highlight JSON syntax
   const highlightJson = (json: string) => {
