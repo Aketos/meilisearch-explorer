@@ -60,13 +60,7 @@ export const JsonDisplay: React.FC<JsonDisplayProps> = ({
       {expanded && (
         <div className="relative">
           <div 
-            className="p-4 overflow-auto font-mono text-sm bg-white/50"
-            style={{ 
-              minHeight: '100px',
-              height: '300px',
-              maxHeight: 'none',
-              resize: 'vertical'
-            }}
+            className="p-4 overflow-auto font-mono text-sm bg-white/50 min-h-[100px] h-[300px] max-h-none resize-y"
           >
             <pre 
               className="whitespace-pre-wrap break-words"
