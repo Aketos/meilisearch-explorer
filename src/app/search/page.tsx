@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import SearchInterface from '@/components/SearchInterface';
-import { meilisearchClient } from '@/lib/meilisearch';
+import { getMeilisearchClient } from '@/lib/meilisearch';
+import ConnectionSettings from '@/components/ConnectionSettings';
 
 export default function SearchPage() {
   const [indexes, setIndexes] = useState<string[]>([]);
@@ -14,7 +15,8 @@ export default function SearchPage() {
     const fetchIndexes = async () => {
       try {
         setLoading(true);
-        const indexesResponse = await meilisearchClient.getIndexes();
+        const client = getMeilisearchClient();
+        const indexesResponse = await client.getIndexes();
         const indexUids = indexesResponse.results.map(index => index.uid);
         setIndexes(indexUids);
         
@@ -64,6 +66,31 @@ export default function SearchPage() {
       {/* Main Content */}
       <div className="relative px-6 pb-16">
         <div className="max-w-7xl mx-auto space-y-8">
+          {/* Connection Settings Card */}
+          <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 p-8 animate-slide-up" style={{animationDelay: '0.05s'}}>
+            <ConnectionSettings onSaved={() => {
+              // re-fetch indexes after updating connection
+              (async () => {
+                try {
+                  setLoading(true);
+                  const client = getMeilisearchClient();
+                  const indexesResponse = await client.getIndexes();
+                  const indexUids = indexesResponse.results.map(index => index.uid);
+                  setIndexes(indexUids);
+                  if (indexUids.length > 0) {
+                    setSelectedIndex(indexUids[0]);
+                  } else {
+                    setSelectedIndex('');
+                  }
+                  setError(null);
+                } catch (err: any) {
+                  setError(`Failed to fetch indexes: ${err.message}`);
+                } finally {
+                  setLoading(false);
+                }
+              })();
+            }} />
+          </div>
           
           {error && (
             <div className="bg-red-50/80 backdrop-blur-xl border border-red-200/50 text-red-700 px-6 py-4 rounded-2xl shadow-lg animate-fade-in">

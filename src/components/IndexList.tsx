@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { meilisearchClient, waitForTask } from '@/lib/meilisearch';
+import { getMeilisearchClient, waitForTask } from '@/lib/meilisearch';
 import Link from 'next/link';
 
 interface IndexStats {
@@ -29,13 +29,14 @@ export default function IndexList() {
   const fetchIndexes = async () => {
     try {
       setLoading(true);
-      const indexesResponse = await meilisearchClient.getIndexes();
+      const client = getMeilisearchClient();
+      const indexesResponse = await client.getIndexes();
       
       // Fetch stats for each index
       const indexesWithStats = await Promise.all(
         indexesResponse.results.map(async (index) => {
           try {
-            const stats = await meilisearchClient.index(index.uid).getStats();
+            const stats = await getMeilisearchClient().index(index.uid).getStats();
             return { 
               uid: index.uid,
               primaryKey: index.primaryKey,
@@ -75,7 +76,7 @@ export default function IndexList() {
     try {
       setIsCreating(true);
       const options = primaryKey.trim() ? { primaryKey: primaryKey.trim() } : undefined;
-      const task = await meilisearchClient.createIndex(newIndexName.trim(), options);
+      const task = await getMeilisearchClient().createIndex(newIndexName.trim(), options);
       await waitForTask(task.taskUid);
       setNewIndexName('');
       setPrimaryKey('');
@@ -91,7 +92,7 @@ export default function IndexList() {
     if (!confirm(`Are you sure you want to delete the index "${indexUid}"?`)) return;
     
     try {
-      const task = await meilisearchClient.deleteIndex(indexUid);
+      const task = await getMeilisearchClient().deleteIndex(indexUid);
       await waitForTask(task.taskUid);
       fetchIndexes();
     } catch (err: any) {

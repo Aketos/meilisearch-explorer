@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { InstantSearch, SearchBox, Hits, Configure, Pagination } from 'react-instantsearch';
-import { searchClient } from '@/lib/meilisearch';
+import { getSearchClient } from '@/lib/meilisearch';
 
 interface SearchInterfaceProps {
   indexName: string;
@@ -78,7 +78,7 @@ export default function SearchInterface({ indexName }: SearchInterfaceProps) {
 
   return (
     <div className="w-full space-y-8">
-      <InstantSearch searchClient={searchClient.searchClient as any} indexName={indexName}>
+      <InstantSearch searchClient={getSearchClient() as any} indexName={indexName}>
         {/* Compact Search Header */}
         <div className="mb-6">
           <div className="flex items-center justify-between">

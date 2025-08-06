@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { meilisearchClient, waitForTask } from '@/lib/meilisearch';
+import { getMeilisearchClient, waitForTask } from '@/lib/meilisearch';
 
 interface IndexSettingsProps {
   indexUid: string;
@@ -41,7 +41,7 @@ export default function IndexSettings({ indexUid }: IndexSettingsProps) {
   const fetchSettings = async () => {
     try {
       setLoading(true);
-      const allSettings = await meilisearchClient.index(indexUid).getSettings();
+      const allSettings = await getMeilisearchClient().index(indexUid).getSettings();
       setSettings(allSettings);
       setError(null);
     } catch (err: any) {
@@ -60,7 +60,7 @@ export default function IndexSettings({ indexUid }: IndexSettingsProps) {
     try {
       setLoading(true);
       const updateData = { [settingType]: newValue };
-      const task = await meilisearchClient.index(indexUid).updateSettings(updateData);
+      const task = await getMeilisearchClient().index(indexUid).updateSettings(updateData);
       await waitForTask(task.taskUid);
       
       setSuccess(`Successfully updated ${settingType}`);

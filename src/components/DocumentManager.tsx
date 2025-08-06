@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { meilisearchClient, waitForTask } from '@/lib/meilisearch';
+import { getMeilisearchClient, waitForTask } from '@/lib/meilisearch';
 import { JsonDisplay } from '@/components/JsonDisplay';
 
 interface DocumentManagerProps {
@@ -22,14 +22,14 @@ export default function DocumentManager({ indexUid }: DocumentManagerProps) {
     try {
       setLoading(true);
       const offset = (page - 1) * limit;
-      const response = await meilisearchClient.index(indexUid).getDocuments({
+      const response = await getMeilisearchClient().index(indexUid).getDocuments({
         offset,
         limit,
       });
       setDocuments(response.results);
       
       // Get total documents count
-      const stats = await meilisearchClient.index(indexUid).getStats();
+      const stats = await getMeilisearchClient().index(indexUid).getStats();
       setTotalDocuments(stats.numberOfDocuments);
       
       setError(null);
@@ -64,7 +64,7 @@ export default function DocumentManager({ indexUid }: DocumentManagerProps) {
       // Handle single document or array of documents
       const documents = Array.isArray(documentToAdd) ? documentToAdd : [documentToAdd];
       
-      const task = await meilisearchClient.index(indexUid).addDocuments(documents);
+      const task = await getMeilisearchClient().index(indexUid).addDocuments(documents);
       await waitForTask(task.taskUid);
       
       setNewDocument('');
@@ -81,7 +81,7 @@ export default function DocumentManager({ indexUid }: DocumentManagerProps) {
     if (!confirm(`Are you sure you want to delete this document?`)) return;
     
     try {
-      const task = await meilisearchClient.index(indexUid).deleteDocument(documentId);
+      const task = await getMeilisearchClient().index(indexUid).deleteDocument(documentId);
       await waitForTask(task.taskUid);
       fetchDocuments();
     } catch (err: any) {

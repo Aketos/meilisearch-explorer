@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { meilisearchClient } from '@/lib/meilisearch';
+import { getMeilisearchClient } from '@/lib/meilisearch';
+import ConnectionSettings from '@/components/ConnectionSettings';
 
 export default function ManagementPage() {
   const [serverInfo, setServerInfo] = useState<any>(null);
@@ -14,9 +15,10 @@ export default function ManagementPage() {
       setLoading(true);
       setError(null);
       
-      const stats = await meilisearchClient.getStats();
-      const health = await meilisearchClient.health();
-      const version = await meilisearchClient.getVersion();
+      const client = getMeilisearchClient();
+      const stats = await client.getStats();
+      const health = await client.health();
+      const version = await client.getVersion();
       
       setServerInfo({
         stats,
@@ -36,6 +38,19 @@ export default function ManagementPage() {
   return (
     <div className="py-8 animate-fade-in">
       <h1 className="text-4xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-blue-700 to-indigo-700">Management</h1>
+      {/* Connection Settings Card */}
+      <div className="mb-8 animate-slide-up" style={{animationDelay: '0.05s'}}>
+        <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 p-8">
+          <ConnectionSettings onSaved={() => {
+            // Clear current info and refresh with new connection
+            setServerInfo(null);
+            setError(null);
+            setSuccess('Configuration mise à jour');
+            setTimeout(() => setSuccess(null), 2000);
+            fetchServerInfo();
+          }} />
+        </div>
+      </div>
       
       {error && (
         <div className="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-lg mb-6 shadow-sm animate-fade-in">
