@@ -15,4 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      run: docker build . --file Dockerfile --tag meilisearch-explorer:$(date +%s)
+
+    - name: Push the Docker image
+      run: docker push meilisearch-explorer:$(date +%s)

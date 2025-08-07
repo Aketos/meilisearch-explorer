@@ -95,3 +95,35 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - [Meilisearch](https://www.meilisearch.com/) for the powerful search engine
 - [Next.js](https://nextjs.org/) for the React framework
 - [Tailwind CSS](https://tailwindcss.com/) for styling
+
+## Docker
+
+Build and run the app with Docker:
+
+```bash
+# Build the image
+docker build -t meilisearch-explorer .
+
+# Run the container
+docker run --rm -p 3000:3000 meilisearch-explorer
+```
+
+Open http://localhost:3000 and configure the Meilisearch host and API key under the Configuration page.
+
+### Docker Compose (app + Meilisearch)
+
+Use the provided `docker-compose.yml` to start both the app and a Meilisearch instance:
+
+```bash
+docker compose up --build
+```
+
+This will start:
+- App at http://localhost:3000
+- Meilisearch at http://localhost:7700
+
+Inside the app, open the Configuration page and set:
+- Host: `http://meilisearch:7700`
+- API key: your key if configured (leave empty if none)
+
+Data is persisted in a named Docker volume `meili_data`.
