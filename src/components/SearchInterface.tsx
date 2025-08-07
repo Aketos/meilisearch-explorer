@@ -104,7 +104,7 @@ export default function SearchInterface({ indexName }: SearchInterfaceProps) {
               root: 'w-full',
               form: 'relative',
               input: 'w-full px-6 py-4 pl-14 pr-14 bg-white/80 border-2 border-gray-200/50 rounded-2xl shadow-lg focus:outline-none focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 text-gray-800 transition-all duration-300 hover:border-purple-400 text-lg backdrop-blur-sm placeholder-gray-500',
-              submit: 'absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 text-purple-500',
+              submit: 'hidden absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 text-purple-500',
               reset: 'absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 text-gray-400 hover:text-red-500 transition-colors duration-300',
             }}
           />
