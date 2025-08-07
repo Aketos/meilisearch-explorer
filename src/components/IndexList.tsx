@@ -242,15 +242,26 @@ export default function IndexList() {
       </div>
       
       {loading ? (
-        <div className="text-center py-16" role="status" aria-live="polite">
-          <div className="relative">
-            <div className="w-16 h-16 mx-auto mb-4">
-              <div className="absolute inset-0 rounded-full border-4 border-blue-200"></div>
-              <div className="absolute inset-0 rounded-full border-4 border-blue-600 border-t-transparent animate-spin"></div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" role="status" aria-live="polite">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-lg border border-white/20 p-6 animate-pulse-slow">
+              <div className="flex items-start mb-4">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-gray-200 to-gray-100 mr-3"></div>
+                <div className="flex-1 space-y-2">
+                  <div className="h-4 bg-gray-200/80 rounded w-1/2"></div>
+                  <div className="h-3 bg-gray-200/60 rounded w-1/3"></div>
+                </div>
+              </div>
+              <div className="space-y-3">
+                <div className="h-3 bg-gray-200/60 rounded"></div>
+                <div className="h-3 bg-gray-200/60 rounded w-5/6"></div>
+                <div className="h-3 bg-gray-200/60 rounded w-2/3"></div>
+              </div>
+              <div className="mt-4 pt-4 border-t border-gray-200/50">
+                <div className="h-10 bg-gray-200/60 rounded-xl"></div>
+              </div>
             </div>
-            <p className="text-lg font-medium text-gray-700">Chargement des index...</p>
-            <p className="text-sm text-gray-500 mt-2">Veuillez patienter</p>
-          </div>
+          ))}
         </div>
       ) : indexes.length === 0 ? (
         <div className="text-center py-16 bg-gradient-to-br from-gray-50/80 to-blue-50/50 backdrop-blur-xl rounded-3xl shadow-xl border border-white/20">
@@ -338,7 +349,7 @@ export default function IndexList() {
                     href={`/indexes/${index.uid}`}
                     className="w-full flex items-center justify-center px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl hover:from-blue-600 hover:to-indigo-700 transition-all duration-300 font-medium group-hover:shadow-lg"
                   >
-                    <span>Gérer l'Index</span>
+                    <span className="text-white">Gérer l'Index</span>
                     <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
