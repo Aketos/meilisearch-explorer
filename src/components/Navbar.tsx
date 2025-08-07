@@ -3,10 +3,13 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
+import LocaleSwitcher from '@/components/LocaleSwitcher';
+import { useI18n } from '@/components/I18nProvider';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  const { t } = useI18n();
   
   // Close mobile menu when navigating to a new page
   useEffect(() => {
@@ -33,12 +36,15 @@ export default function Navbar() {
             </div>
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-4">
-                <NavLink href="/" isActive={pathname === '/'}>Home</NavLink>
-                <NavLink href="/indexes" isActive={isActive('/indexes')}>Indexes</NavLink>
-                <NavLink href="/search" isActive={isActive('/search')}>Search</NavLink>
-                <NavLink href="/management" isActive={isActive('/management')}>Management</NavLink>
+                <NavLink href="/" isActive={pathname === '/'}>{t('nav.home')}</NavLink>
+                <NavLink href="/indexes" isActive={isActive('/indexes')}>{t('nav.indexes')}</NavLink>
+                <NavLink href="/search" isActive={isActive('/search')}>{t('nav.search')}</NavLink>
+                <NavLink href="/configuration" isActive={isActive('/configuration')}>{t('nav.configuration')}</NavLink>
               </div>
             </div>
+          </div>
+          <div className="hidden md:block">
+            <LocaleSwitcher />
           </div>
           <div className="md:hidden">
             <button
@@ -79,11 +85,14 @@ export default function Navbar() {
         id="mobile-menu"
         aria-label="Mobile navigation"
       >
+        <div className="px-3 py-3 border-t border-gray-200 flex justify-end">
+          <LocaleSwitcher />
+        </div>
         <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-          <MobileNavLink href="/" isActive={pathname === '/'}>Home</MobileNavLink>
-          <MobileNavLink href="/indexes" isActive={isActive('/indexes')}>Indexes</MobileNavLink>
-          <MobileNavLink href="/search" isActive={isActive('/search')}>Search</MobileNavLink>
-          <MobileNavLink href="/management" isActive={isActive('/management')}>Management</MobileNavLink>
+          <MobileNavLink href="/" isActive={pathname === '/'}>{t('nav.home')}</MobileNavLink>
+          <MobileNavLink href="/indexes" isActive={isActive('/indexes')}>{t('nav.indexes')}</MobileNavLink>
+          <MobileNavLink href="/search" isActive={isActive('/search')}>{t('nav.search')}</MobileNavLink>
+          <MobileNavLink href="/configuration" isActive={isActive('/configuration')}>{t('nav.configuration')}</MobileNavLink>
         </div>
       </div>
     </nav>

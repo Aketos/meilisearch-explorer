@@ -3,12 +3,23 @@
 import { useState, useEffect } from 'react';
 import SearchInterface from '@/components/SearchInterface';
 import { getMeilisearchClient } from '@/lib/meilisearch';
+import { useI18n } from '@/components/I18nProvider';
+
+function errorToMessage(err: unknown): string {
+  if (err instanceof Error && err.message) return err.message;
+  try {
+    return JSON.stringify(err);
+  } catch {
+    return String(err);
+  }
+}
 
 export default function SearchPage() {
   const [indexes, setIndexes] = useState<string[]>([]);
   const [selectedIndex, setSelectedIndex] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { t } = useI18n();
 
   useEffect(() => {
     const fetchIndexes = async () => {
@@ -24,8 +35,8 @@ export default function SearchPage() {
         }
         
         setError(null);
-      } catch (err: any) {
-        setError(`Failed to fetch indexes: ${err.message}`);
+      } catch (err: unknown) {
+        setError(t('search.fetch_failed', { message: errorToMessage(err) }));
       } finally {
         setLoading(false);
       }
@@ -48,15 +59,15 @@ export default function SearchPage() {
               </div>
               <div>
                 <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-700 to-pink-700">
-                  Recherche Meilisearch
+                  {t('search.page.title')}
                 </h1>
                 <p className="text-sm text-gray-600 mt-1">
-                  Explorez vos données instantanément
+                  {t('search.page.subtitle')}
                 </p>
               </div>
             </div>
             <div className="text-xs text-gray-500 bg-gray-100/80 px-3 py-1 rounded-full">
-              Recherche Avancée
+              {t('search.page.badge')}
             </div>
           </div>
         </div>
@@ -75,7 +86,7 @@ export default function SearchPage() {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="font-medium">Erreur de connexion</h3>
+                  <h3 className="font-medium">{t('search.error.title')}</h3>
                   <p className="text-sm text-red-600">{error}</p>
                 </div>
               </div>
@@ -91,8 +102,8 @@ export default function SearchPage() {
                 </svg>
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-gray-800">Sélection de l'Index</h2>
-                <p className="text-gray-600">Choisissez l'index dans lequel effectuer votre recherche</p>
+                <h2 className="text-2xl font-bold text-gray-800">{t('search.indexSelect.title')}</h2>
+                <p className="text-gray-600">{t('search.indexSelect.desc')}</p>
               </div>
             </div>
             
@@ -103,8 +114,8 @@ export default function SearchPage() {
                 className="w-full px-6 py-4 bg-white/80 border-2 border-gray-200/50 rounded-2xl shadow-lg focus:outline-none focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 text-gray-800 transition-all duration-300 hover:border-purple-400 text-lg font-medium backdrop-blur-sm"
                 disabled={loading || indexes.length === 0}
               >
-                {loading && <option value="">Chargement des index...</option>}
-                {!loading && indexes.length === 0 && <option value="">Aucun index disponible</option>}
+                {loading && <option value="">{t('search.select.loading')}</option>}
+                {!loading && indexes.length === 0 && <option value="">{t('search.select.none')}</option>}
                 {indexes.map(indexUid => (
                   <option key={indexUid} value={indexUid}>{indexUid}</option>
                 ))}
@@ -134,8 +145,8 @@ export default function SearchPage() {
                       <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                     </svg>
                   </div>
-                  <h3 className="text-lg font-semibold text-amber-800 mb-2">Aucun index sélectionné</h3>
-                  <p className="text-amber-700">Veuillez créer un index avant de pouvoir effectuer une recherche.</p>
+                  <h3 className="text-lg font-semibold text-amber-800 mb-2">{t('search.empty.title')}</h3>
+                  <p className="text-amber-700">{t('search.empty.desc')}</p>
                 </div>
               </div>
             </div>

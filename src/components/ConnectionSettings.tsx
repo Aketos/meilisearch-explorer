@@ -2,16 +2,23 @@
 
 import { useEffect, useState } from 'react';
 import { getCurrentConfig, setMeilisearchConfig } from '@/lib/meilisearch';
+import { useI18n } from '@/components/I18nProvider';
 
 interface ConnectionSettingsProps {
   onSaved?: () => void;
 }
 
 export default function ConnectionSettings({ onSaved }: ConnectionSettingsProps) {
+  const { t } = useI18n();
   const [host, setHost] = useState('');
   const [apiKey, setApiKey] = useState('');
   const [testing, setTesting] = useState(false);
   const [status, setStatus] = useState<null | { type: 'success' | 'error'; message: string }>(null);
+
+  const errorToMessage = (e: unknown) => {
+    if (e instanceof Error) return e.message;
+    try { return JSON.stringify(e); } catch { return String(e); }
+  };
 
   useEffect(() => {
     const cfg = getCurrentConfig();
@@ -21,7 +28,7 @@ export default function ConnectionSettings({ onSaved }: ConnectionSettingsProps)
 
   const handleSave = () => {
     setMeilisearchConfig(host.trim(), apiKey.trim());
-    setStatus({ type: 'success', message: 'Configuration enregistrée' });
+    setStatus({ type: 'success', message: t('conn.saved') });
     if (onSaved) onSaved();
   };
 
@@ -35,12 +42,12 @@ export default function ConnectionSettings({ onSaved }: ConnectionSettingsProps)
       if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
       const data = await res.json();
       if (data?.status === 'available') {
-        setStatus({ type: 'success', message: 'Connexion OK' });
+        setStatus({ type: 'success', message: t('conn.health_ok') });
       } else {
-        setStatus({ type: 'error', message: 'Réponse inattendue du serveur' });
+        setStatus({ type: 'error', message: t('conn.health_unexpected') });
       }
-    } catch (e: any) {
-      setStatus({ type: 'error', message: `Échec de connexion: ${e.message}` });
+    } catch (e: unknown) {
+      setStatus({ type: 'error', message: t('conn.health_failed', { message: errorToMessage(e) }) });
     } finally {
       setTesting(false);
     }
@@ -55,29 +62,29 @@ export default function ConnectionSettings({ onSaved }: ConnectionSettingsProps)
           </svg>
         </div>
         <div>
-          <h3 className="text-lg font-bold text-gray-800">Connexion Meilisearch</h3>
-          <p className="text-xs text-gray-500">Configurez l'hôte et la clé API</p>
+          <h3 className="text-lg font-bold text-gray-800">{t('conn.title')}</h3>
+          <p className="text-xs text-gray-500">{t('conn.subtitle')}</p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="md:col-span-2">
-          <label className="block text-sm font-medium text-gray-700 mb-1">Hôte</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">{t('conn.host_label')}</label>
           <input
             type="url"
             value={host}
             onChange={(e) => setHost(e.target.value)}
-            placeholder="http://localhost:7700"
+            placeholder={t('conn.host_placeholder')}
             className="w-full px-4 py-3 bg-white/80 border-2 border-gray-200/50 rounded-xl shadow-sm focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 text-gray-800 transition-all duration-300"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Clé API (facultatif)</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">{t('conn.api_key_label')}</label>
           <input
             type="password"
             value={apiKey}
             onChange={(e) => setApiKey(e.target.value)}
-            placeholder="clé API"
+            placeholder={t('conn.api_key_placeholder')}
             className="w-full px-4 py-3 bg-white/80 border-2 border-gray-200/50 rounded-xl shadow-sm focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 text-gray-800 transition-all duration-300"
           />
         </div>
@@ -94,14 +101,14 @@ export default function ConnectionSettings({ onSaved }: ConnectionSettingsProps)
           onClick={handleSave}
           className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium py-2.5 px-5 rounded-xl shadow-sm hover:shadow transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
-          Enregistrer
+          {t('conn.save')}
         </button>
         <button
           onClick={testConnection}
           disabled={testing}
           className="px-4 py-2.5 bg-white/80 border-2 border-gray-200/50 rounded-xl text-gray-700 hover:bg-gray-50 transition disabled:opacity-50"
         >
-          {testing ? 'Test en cours…' : 'Tester la connexion'}
+          {testing ? t('conn.testing') : t('conn.test')}
         </button>
       </div>
     </div>

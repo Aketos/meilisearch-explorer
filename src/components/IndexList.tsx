@@ -3,6 +3,19 @@
 import { useState, useEffect } from 'react';
 import { getMeilisearchClient, waitForTask } from '@/lib/meilisearch';
 import Link from 'next/link';
+import { useI18n } from '@/components/I18nProvider';
+
+// i18n comes from provider
+
+// Safe error message extraction for unknown errors
+const errorToMessage = (err: unknown): string => {
+  if (err instanceof Error) return err.message;
+  try {
+    return JSON.stringify(err);
+  } catch {
+    return String(err);
+  }
+};
 
 interface IndexStats {
   numberOfDocuments: number;
@@ -15,10 +28,11 @@ interface IndexInfo {
   createdAt: string | Date | undefined;
   updatedAt: string | Date | undefined;
   stats?: IndexStats;
-  [key: string]: any; // Allow for additional properties from the Meilisearch client
+  [key: string]: unknown; // Allow for additional properties from the Meilisearch client
 }
 
 export default function IndexList() {
+  const { t, formatDate } = useI18n();
   const [indexes, setIndexes] = useState<IndexInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -44,7 +58,7 @@ export default function IndexList() {
               updatedAt: index.updatedAt,
               stats 
             } as IndexInfo;
-          } catch (e) {
+          } catch {
             return { 
               uid: index.uid,
               primaryKey: index.primaryKey,
@@ -81,22 +95,22 @@ export default function IndexList() {
       setNewIndexName('');
       setPrimaryKey('');
       fetchIndexes();
-    } catch (err: any) {
-      setError(`Failed to create index: ${err.message}`);
+    } catch (err: unknown) {
+      setError(`Failed to create index: ${errorToMessage(err)}`);
     } finally {
       setIsCreating(false);
     }
   };
 
   const handleDeleteIndex = async (indexUid: string) => {
-    if (!confirm(`Are you sure you want to delete the index "${indexUid}"?`)) return;
+    if (!confirm(t('confirm.delete_prompt', { index: indexUid }))) return;
     
     try {
       const task = await getMeilisearchClient().deleteIndex(indexUid);
       await waitForTask(task.taskUid);
       fetchIndexes();
-    } catch (err: any) {
-      setError(`Failed to delete index: ${err.message}`);
+    } catch (err: unknown) {
+      setError(`Failed to delete index: ${errorToMessage(err)}`);
     }
   };
 
@@ -112,15 +126,15 @@ export default function IndexList() {
           </div>
           <div>
             <h2 className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-700 to-indigo-700">
-              Vos Index
+              {t('header.title')}
             </h2>
-            <p className="text-xs text-gray-500">Gérez vos données</p>
+            <p className="text-xs text-gray-500">{t('header.subtitle')}</p>
           </div>
         </div>
         <button
           onClick={fetchIndexes}
           className="group relative px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl hover:from-blue-600 hover:to-indigo-700 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-500/20 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 flex items-center gap-2"
-          aria-label="Actualiser les index"
+          aria-label={t('refresh_aria')}
           disabled={loading}
         >
           <svg 
@@ -131,7 +145,7 @@ export default function IndexList() {
           >
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
           </svg>
-          <span className="text-sm font-medium">{loading ? 'Actualisation...' : 'Actualiser'}</span>
+          <span className="text-sm font-medium">{loading ? t('refreshing') : t('refresh')}</span>
         </button>
       </div>
       
@@ -160,8 +174,8 @@ export default function IndexList() {
             </svg>
           </div>
           <div>
-            <h3 className="text-2xl font-bold text-gray-800">Créer un Nouvel Index</h3>
-            <p className="text-gray-600">Ajoutez un nouvel index à votre instance Meilisearch</p>
+            <h3 className="text-2xl font-bold text-gray-800">{t('create.title')}</h3>
+            <p className="text-gray-600">{t('create.subtitle')}</p>
           </div>
         </div>
         
@@ -169,7 +183,7 @@ export default function IndexList() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <label htmlFor="index-name" className="block text-sm font-semibold text-gray-700">
-                Nom de l'Index *
+                {t('form.index_name')}
               </label>
               <div className="relative">
                 <input
@@ -179,7 +193,7 @@ export default function IndexList() {
                   value={newIndexName}
                   onChange={(e) => setNewIndexName(e.target.value)}
                   className="w-full px-4 py-3 bg-white/80 border-2 border-gray-200/50 rounded-xl shadow-sm focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 text-gray-800 transition-all duration-300 hover:border-blue-400 backdrop-blur-sm"
-                  placeholder="ex: produits, articles, utilisateurs"
+                  placeholder={t('form.index_name_placeholder')}
                   required
                   aria-required="true"
                 />
@@ -193,7 +207,7 @@ export default function IndexList() {
             
             <div className="space-y-2">
               <label htmlFor="primary-key" className="block text-sm font-semibold text-gray-700">
-                Clé Primaire (optionnel)
+                {t('form.primary_key')}
               </label>
               <div className="relative">
                 <input
@@ -201,7 +215,7 @@ export default function IndexList() {
                   type="text"
                   value={primaryKey}
                   onChange={(e) => setPrimaryKey(e.target.value)}
-                  placeholder="ex: id, uuid, product_id"
+                  placeholder={t('form.primary_key_placeholder')}
                   className="w-full px-4 py-3 bg-white/80 border-2 border-gray-200/50 rounded-xl shadow-sm focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 text-gray-800 transition-all duration-300 hover:border-blue-400 backdrop-blur-sm"
                   aria-required="false"
                 />
@@ -226,14 +240,14 @@ export default function IndexList() {
                   <svg className="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                   </svg>
-                  <span>Création en cours...</span>
+                  <span>{t('create.submitting')}</span>
                 </>
               ) : (
                 <>
                   <svg className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                   </svg>
-                  <span>Créer l'Index</span>
+                  <span>{t('create.submit')}</span>
                 </>
               )}
             </button>
@@ -270,14 +284,14 @@ export default function IndexList() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
             </svg>
           </div>
-          <h3 className="text-xl font-semibold text-gray-800 mb-2">Aucun index trouvé</h3>
-          <p className="text-gray-600 max-w-md mx-auto">Commencez par créer votre premier index en utilisant le formulaire ci-dessus.</p>
+          <h3 className="text-xl font-semibold text-gray-800 mb-2">{t('empty.title')}</h3>
+          <p className="text-gray-600 max-w-md mx-auto">{t('empty.subtitle')}</p>
         </div>
       ) : (
         <div className="space-y-6">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold text-gray-800">Index Existants ({indexes.length})</h3>
-            <div className="text-xs text-gray-500">Cliquez pour gérer</div>
+            <h3 className="text-lg font-semibold text-gray-800">{t('list.title', { count: indexes.length })}</h3>
+            <div className="text-xs text-gray-500">{t('list.hint')}</div>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -297,7 +311,7 @@ export default function IndexList() {
                       </Link>
                       {index.primaryKey && (
                         <p className="text-sm text-gray-500 mt-1">
-                          Clé: <span className="font-medium">{index.primaryKey}</span>
+                          {t('card.primary_key_label')} <span className="font-medium">{index.primaryKey}</span>
                         </p>
                       )}
                     </div>
@@ -306,7 +320,7 @@ export default function IndexList() {
                   <button
                     onClick={() => handleDeleteIndex(index.uid)}
                     className="opacity-0 group-hover:opacity-100 p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all duration-300"
-                    aria-label={`Supprimer l'index ${index.uid}`}
+                    aria-label={t('actions.delete_index_aria', { index: index.uid })}
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -316,7 +330,7 @@ export default function IndexList() {
                 
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Documents</span>
+                    <span className="text-sm text-gray-600">{t('card.documents')}</span>
                     <div className="flex items-center">
                       <div className="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
                       <span className="font-semibold text-gray-800">
@@ -326,20 +340,20 @@ export default function IndexList() {
                   </div>
                   
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Statut</span>
+                    <span className="text-sm text-gray-600">{t('card.status')}</span>
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                       index.stats?.isIndexing 
                         ? 'bg-yellow-100 text-yellow-800' 
                         : 'bg-green-100 text-green-800'
                     }`}>
-                      {index.stats?.isIndexing ? 'Indexation...' : 'Prêt'}
+                      {index.stats?.isIndexing ? t('card.status.indexing') : t('card.status.ready')}
                     </span>
                   </div>
                   
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Mis à jour</span>
+                    <span className="text-sm text-gray-600">{t('card.updated')}</span>
                     <span className="text-xs text-gray-500">
-                      {index.updatedAt ? new Date(index.updatedAt).toLocaleDateString('fr-FR') : 'N/A'}
+                      {index.updatedAt ? formatDate(index.updatedAt, { dateStyle: 'short' }) : t('label.na')}
                     </span>
                   </div>
                 </div>
@@ -349,7 +363,7 @@ export default function IndexList() {
                     href={`/indexes/${index.uid}`}
                     className="w-full flex items-center justify-center px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl hover:from-blue-600 hover:to-indigo-700 transition-all duration-300 font-medium group-hover:shadow-lg"
                   >
-                    <span className="text-white">Gérer l'Index</span>
+                    <span className="text-white">{t('card.manage')}</span>
                     <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>

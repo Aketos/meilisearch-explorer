@@ -2,12 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { getMeilisearchClient, waitForTask } from '@/lib/meilisearch';
+import { useI18n } from '@/components/I18nProvider';
 
 interface IndexSettingsProps {
   indexUid: string;
 }
 
 export default function IndexSettings({ indexUid }: IndexSettingsProps) {
+  const { t } = useI18n();
   const [settings, setSettings] = useState<any>({
     displayedAttributes: [],
     searchableAttributes: [],
@@ -38,14 +40,19 @@ export default function IndexSettings({ indexUid }: IndexSettingsProps) {
   const [newSynonymKey, setNewSynonymKey] = useState('');
   const [newSynonymValue, setNewSynonymValue] = useState('');
 
+  const errorToMessage = (e: unknown) => {
+    if (e instanceof Error) return e.message;
+    try { return JSON.stringify(e); } catch { return String(e); }
+  };
+
   const fetchSettings = async () => {
     try {
       setLoading(true);
       const allSettings = await getMeilisearchClient().index(indexUid).getSettings();
       setSettings(allSettings);
       setError(null);
-    } catch (err: any) {
-      setError(`Failed to fetch settings: ${err.message}`);
+    } catch (err: unknown) {
+      setError(t('settings.fetch_failed', { message: errorToMessage(err) }));
       console.error(err);
     } finally {
       setLoading(false);
@@ -63,12 +70,12 @@ export default function IndexSettings({ indexUid }: IndexSettingsProps) {
       const task = await getMeilisearchClient().index(indexUid).updateSettings(updateData);
       await waitForTask(task.taskUid);
       
-      setSuccess(`Successfully updated ${settingType}`);
+      setSuccess(t('settings.success', { setting: settingType }));
       setTimeout(() => setSuccess(null), 3000);
       
       fetchSettings();
-    } catch (err: any) {
-      setError(`Failed to update settings: ${err.message}`);
+    } catch (err: unknown) {
+      setError(t('settings.update_failed', { message: errorToMessage(err) }));
     } finally {
       setLoading(false);
     }
@@ -156,20 +163,20 @@ export default function IndexSettings({ indexUid }: IndexSettingsProps) {
             type="text"
             value={newAttribute}
             onChange={(e) => setNewAttribute(e.target.value)}
-            placeholder="Attribute name"
+            placeholder={t('settings.attribute_placeholder')}
             className="flex-grow p-2 border border-gray-300 rounded-l-md"
           />
           <button
             onClick={() => handleAddAttribute(settingType)}
             className="px-4 py-2 bg-blue-500 text-white rounded-r-md hover:bg-blue-600"
           >
-            Add
+            {t('settings.add')}
           </button>
         </div>
         
         <div className="space-y-2">
           {settings[settingType].length === 0 ? (
-            <p className="text-gray-500">No attributes configured.</p>
+            <p className="text-gray-500">{t('settings.no_attributes')}</p>
           ) : (
             settings[settingType].map((attr: string) => (
               <div key={attr} className="flex items-center justify-between p-2 bg-gray-50 rounded-md">
@@ -178,7 +185,7 @@ export default function IndexSettings({ indexUid }: IndexSettingsProps) {
                   onClick={() => handleRemoveAttribute(settingType, attr)}
                   className="text-red-500 hover:text-red-700"
                 >
-                  Remove
+                  {t('settings.remove')}
                 </button>
               </div>
             ))
@@ -191,26 +198,26 @@ export default function IndexSettings({ indexUid }: IndexSettingsProps) {
   const renderRankingRules = () => {
     return (
       <div>
-        <h3 className="text-lg font-semibold mb-2">Ranking Rules</h3>
+        <h3 className="text-lg font-semibold mb-2">{t('settings.tabs.ranking')}</h3>
         <div className="flex mb-4">
           <input
             type="text"
             value={newRankingRule}
             onChange={(e) => setNewRankingRule(e.target.value)}
-            placeholder="Ranking rule (e.g., words, typo, proximity)"
+            placeholder={t('settings.ranking_placeholder')}
             className="flex-grow p-2 border border-gray-300 rounded-l-md"
           />
           <button
             onClick={handleAddRankingRule}
             className="px-4 py-2 bg-blue-500 text-white rounded-r-md hover:bg-blue-600"
           >
-            Add
+            {t('settings.add')}
           </button>
         </div>
         
         <div className="space-y-2">
           {settings.rankingRules.length === 0 ? (
-            <p className="text-gray-500">No ranking rules configured.</p>
+            <p className="text-gray-500">{t('settings.no_ranking')}</p>
           ) : (
             settings.rankingRules.map((rule: string, index: number) => (
               <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded-md">
@@ -219,7 +226,7 @@ export default function IndexSettings({ indexUid }: IndexSettingsProps) {
                   onClick={() => handleRemoveRankingRule(rule)}
                   className="text-red-500 hover:text-red-700"
                 >
-                  Remove
+                  {t('settings.remove')}
                 </button>
               </div>
             ))
@@ -232,26 +239,26 @@ export default function IndexSettings({ indexUid }: IndexSettingsProps) {
   const renderStopWords = () => {
     return (
       <div>
-        <h3 className="text-lg font-semibold mb-2">Stop Words</h3>
+        <h3 className="text-lg font-semibold mb-2">{t('settings.tabs.stopWords')}</h3>
         <div className="flex mb-4">
           <input
             type="text"
             value={newStopWord}
             onChange={(e) => setNewStopWord(e.target.value)}
-            placeholder="Stop word"
+            placeholder={t('settings.stopword_placeholder')}
             className="flex-grow p-2 border border-gray-300 rounded-l-md"
           />
           <button
             onClick={handleAddStopWord}
             className="px-4 py-2 bg-blue-500 text-white rounded-r-md hover:bg-blue-600"
           >
-            Add
+            {t('settings.add')}
           </button>
         </div>
         
         <div className="space-y-2">
           {settings.stopWords.length === 0 ? (
-            <p className="text-gray-500">No stop words configured.</p>
+            <p className="text-gray-500">{t('settings.no_stopwords')}</p>
           ) : (
             settings.stopWords.map((word: string, index: number) => (
               <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded-md">
@@ -260,7 +267,7 @@ export default function IndexSettings({ indexUid }: IndexSettingsProps) {
                   onClick={() => handleRemoveStopWord(word)}
                   className="text-red-500 hover:text-red-700"
                 >
-                  Remove
+                  {t('settings.remove')}
                 </button>
               </div>
             ))
@@ -273,35 +280,35 @@ export default function IndexSettings({ indexUid }: IndexSettingsProps) {
   const renderSynonyms = () => {
     return (
       <div>
-        <h3 className="text-lg font-semibold mb-2">Synonyms</h3>
+        <h3 className="text-lg font-semibold mb-2">{t('settings.tabs.synonyms')}</h3>
         <div className="space-y-2 mb-4">
           <input
             type="text"
             value={newSynonymKey}
             onChange={(e) => setNewSynonymKey(e.target.value)}
-            placeholder="Word"
+            placeholder={t('settings.synonym_word')}
             className="w-full p-2 border border-gray-300 rounded-md"
           />
           <input
             type="text"
             value={newSynonymValue}
             onChange={(e) => setNewSynonymValue(e.target.value)}
-            placeholder="Synonyms (comma separated)"
+            placeholder={t('settings.synonym_values')}
             className="w-full p-2 border border-gray-300 rounded-md"
           />
           <button
             onClick={handleAddSynonym}
             className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
           >
-            Add Synonym
+            {t('settings.add_synonym')}
           </button>
         </div>
         
         <div className="space-y-2">
           {Object.keys(settings.synonyms).length === 0 ? (
-            <p className="text-gray-500">No synonyms configured.</p>
+            <p className="text-gray-500">{t('settings.no_synonyms')}</p>
           ) : (
-            Object.entries(settings.synonyms).map(([key, values]: [string, any]) => (
+            Object.entries(settings.synonyms).map(([key, values]: [string, unknown]) => (
               <div key={key} className="p-2 bg-gray-50 rounded-md">
                 <div className="flex items-center justify-between mb-1">
                   <span className="font-semibold">{key}</span>
@@ -309,11 +316,11 @@ export default function IndexSettings({ indexUid }: IndexSettingsProps) {
                     onClick={() => handleRemoveSynonym(key)}
                     className="text-red-500 hover:text-red-700"
                   >
-                    Remove
+                    {t('settings.remove')}
                   </button>
                 </div>
                 <div className="text-sm text-gray-600">
-                  Synonyms: {Array.isArray(values) ? values.join(', ') : JSON.stringify(values)}
+                  {t('settings.synonyms_label', { values: Array.isArray(values) ? (values as string[]).join(', ') : JSON.stringify(values) })}
                 </div>
               </div>
             ))
@@ -326,20 +333,20 @@ export default function IndexSettings({ indexUid }: IndexSettingsProps) {
   const renderDistinctAttribute = () => {
     return (
       <div>
-        <h3 className="text-lg font-semibold mb-2">Distinct Attribute</h3>
+        <h3 className="text-lg font-semibold mb-2">{t('settings.tabs.distinct')}</h3>
         <div className="flex mb-4">
           <input
             type="text"
             value={newAttribute}
             onChange={(e) => setNewAttribute(e.target.value)}
-            placeholder="Attribute name"
+            placeholder={t('settings.attribute_placeholder')}
             className="flex-grow p-2 border border-gray-300 rounded-l-md"
           />
           <button
             onClick={handleSetDistinctAttribute}
             className="px-4 py-2 bg-blue-500 text-white rounded-r-md hover:bg-blue-600"
           >
-            Set
+            {t('settings.set')}
           </button>
         </div>
         
@@ -351,11 +358,11 @@ export default function IndexSettings({ indexUid }: IndexSettingsProps) {
                 onClick={() => updateSettings('distinctAttribute', null)}
                 className="text-red-500 hover:text-red-700"
               >
-                Remove
+                {t('settings.remove_distinct')}
               </button>
             </div>
           ) : (
-            <p className="text-gray-500">No distinct attribute configured.</p>
+            <p className="text-gray-500">{t('settings.no_distinct')}</p>
           )}
         </div>
       </div>
@@ -365,7 +372,7 @@ export default function IndexSettings({ indexUid }: IndexSettingsProps) {
   const renderTypoTolerance = () => {
     return (
       <div>
-        <h3 className="text-lg font-semibold mb-2">Typo Tolerance</h3>
+        <h3 className="text-lg font-semibold mb-2">{t('settings.tabs.typo')}</h3>
         
         <div className="mb-4">
           <label className="flex items-center space-x-2">
@@ -381,14 +388,14 @@ export default function IndexSettings({ indexUid }: IndexSettingsProps) {
               }}
               className="rounded"
             />
-            <span>Enable typo tolerance</span>
+            <span>{t('settings.enable_typo')}</span>
           </label>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Min word size for one typo
+              {t('settings.min_word_one')}
             </label>
             <input
               type="number"
@@ -410,7 +417,7 @@ export default function IndexSettings({ indexUid }: IndexSettingsProps) {
           
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Min word size for two typos
+              {t('settings.min_word_two')}
             </label>
             <input
               type="number"
@@ -436,7 +443,7 @@ export default function IndexSettings({ indexUid }: IndexSettingsProps) {
 
   return (
     <div className="w-full">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">Settings for {indexUid}</h2>
+      <h2 className="text-2xl font-bold mb-6 text-gray-800">{t('settings.title', { index: indexUid })}</h2>
       
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -453,7 +460,7 @@ export default function IndexSettings({ indexUid }: IndexSettingsProps) {
       {loading ? (
         <div className="text-center py-8">
           <div className="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
-          <p className="mt-2 text-gray-700">Loading settings...</p>
+          <p className="mt-2 text-gray-700">{t('settings.loading')}</p>
         </div>
       ) : (
         <div>
@@ -467,7 +474,7 @@ export default function IndexSettings({ indexUid }: IndexSettingsProps) {
                     : 'border-transparent text-gray-600 hover:text-blue-700 hover:border-blue-300 hover:bg-blue-50/50 hover:shadow-sm'
                 }`}
               >
-                Displayed Attributes
+                {t('settings.tabs.displayed')}
               </button>
               <button
                 onClick={() => setActiveTab('searchable')}
@@ -477,7 +484,7 @@ export default function IndexSettings({ indexUid }: IndexSettingsProps) {
                     : 'border-transparent text-gray-600 hover:text-blue-700 hover:border-blue-300 hover:bg-blue-50/50 hover:shadow-sm'
                 }`}
               >
-                Searchable Attributes
+                {t('settings.tabs.searchable')}
               </button>
               <button
                 onClick={() => setActiveTab('filterable')}
@@ -487,7 +494,7 @@ export default function IndexSettings({ indexUid }: IndexSettingsProps) {
                     : 'border-transparent text-gray-600 hover:text-gray-800 hover:border-gray-300 hover:bg-gray-50'
                 }`}
               >
-                Filterable Attributes
+                {t('settings.tabs.filterable')}
               </button>
               <button
                 onClick={() => setActiveTab('sortable')}
@@ -497,7 +504,7 @@ export default function IndexSettings({ indexUid }: IndexSettingsProps) {
                     : 'border-transparent text-gray-600 hover:text-gray-800 hover:border-gray-300 hover:bg-gray-50'
                 }`}
               >
-                Sortable Attributes
+                {t('settings.tabs.sortable')}
               </button>
               <button
                 onClick={() => setActiveTab('ranking')}
@@ -507,7 +514,7 @@ export default function IndexSettings({ indexUid }: IndexSettingsProps) {
                     : 'border-transparent text-gray-600 hover:text-gray-800 hover:border-gray-300 hover:bg-gray-50'
                 }`}
               >
-                Ranking Rules
+                {t('settings.tabs.ranking')}
               </button>
               <button
                 onClick={() => setActiveTab('stopWords')}
@@ -517,7 +524,7 @@ export default function IndexSettings({ indexUid }: IndexSettingsProps) {
                     : 'border-transparent text-gray-600 hover:text-gray-800 hover:border-gray-300 hover:bg-gray-50'
                 }`}
               >
-                Stop Words
+                {t('settings.tabs.stopWords')}
               </button>
               <button
                 onClick={() => setActiveTab('synonyms')}
@@ -527,7 +534,7 @@ export default function IndexSettings({ indexUid }: IndexSettingsProps) {
                     : 'border-transparent text-gray-600 hover:text-gray-800 hover:border-gray-300 hover:bg-gray-50'
                 }`}
               >
-                Synonyms
+                {t('settings.tabs.synonyms')}
               </button>
               <button
                 onClick={() => setActiveTab('distinct')}
@@ -537,7 +544,7 @@ export default function IndexSettings({ indexUid }: IndexSettingsProps) {
                     : 'border-transparent text-gray-600 hover:text-gray-800 hover:border-gray-300 hover:bg-gray-50'
                 }`}
               >
-                Distinct Attribute
+                {t('settings.tabs.distinct')}
               </button>
               <button
                 onClick={() => setActiveTab('typo')}
@@ -547,16 +554,16 @@ export default function IndexSettings({ indexUid }: IndexSettingsProps) {
                     : 'border-transparent text-gray-600 hover:text-gray-800 hover:border-gray-300 hover:bg-gray-50'
                 }`}
               >
-                Typo Tolerance
+                {t('settings.tabs.typo')}
               </button>
             </nav>
           </div>
           
           <div className="mt-6">
-            {activeTab === 'displayed' && renderAttributeList('displayedAttributes', 'Displayed Attributes')}
-            {activeTab === 'searchable' && renderAttributeList('searchableAttributes', 'Searchable Attributes')}
-            {activeTab === 'filterable' && renderAttributeList('filterableAttributes', 'Filterable Attributes')}
-            {activeTab === 'sortable' && renderAttributeList('sortableAttributes', 'Sortable Attributes')}
+            {activeTab === 'displayed' && renderAttributeList('displayedAttributes', t('settings.tabs.displayed'))}
+            {activeTab === 'searchable' && renderAttributeList('searchableAttributes', t('settings.tabs.searchable'))}
+            {activeTab === 'filterable' && renderAttributeList('filterableAttributes', t('settings.tabs.filterable'))}
+            {activeTab === 'sortable' && renderAttributeList('sortableAttributes', t('settings.tabs.sortable'))}
             {activeTab === 'ranking' && renderRankingRules()}
             {activeTab === 'stopWords' && renderStopWords()}
             {activeTab === 'synonyms' && renderSynonyms()}
@@ -569,7 +576,7 @@ export default function IndexSettings({ indexUid }: IndexSettingsProps) {
               onClick={fetchSettings}
               className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
             >
-              Refresh Settings
+              {t('settings.refresh')}
             </button>
           </div>
         </div>

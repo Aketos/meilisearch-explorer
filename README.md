@@ -10,7 +10,7 @@ A comprehensive Next.js application for managing and exploring your Meilisearch 
 - **Document Management**: Add, edit, and delete documents within indexes
 - **Search Interface**: Perform searches across your Meilisearch indexes with a clean UI
 - **Index Settings**: Configure index settings such as searchable attributes, filterable attributes, etc.
-- **Server Management**: View server statistics, health, and version information
+- **Server Configuration**: View server statistics, health, and version information
 
 ## Prerequisites
 
@@ -71,7 +71,7 @@ pnpm dev
 - `/indexes`: List of all Meilisearch indexes
 - `/indexes/[indexUid]`: Index detail page with document management and settings
 - `/search`: Search interface for querying indexes
-- `/management`: Server management and statistics
+- `/configuration`: Server configuration and statistics
 
 ## Accessibility
 

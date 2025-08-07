@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { getMeilisearchClient } from '@/lib/meilisearch';
 import ConnectionSettings from '@/components/ConnectionSettings';
 
-export default function ManagementPage() {
+export default function ConfigurationPage() {
   const [serverInfo, setServerInfo] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
